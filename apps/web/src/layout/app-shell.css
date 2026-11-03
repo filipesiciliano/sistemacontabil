@@ -1,0 +1,52 @@
+:root {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  color: #1f2933;
+  background: #f7f8fa;
+}
+
+body {
+  margin: 0;
+}
+
+.app-shell__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e4e7eb;
+}
+
+.app-shell__product {
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.app-shell__tagline {
+  font-size: 0.875rem;
+  color: #52606d;
+}
+
+.app-shell__main {
+  padding: 1rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 48rem) {
+  .app-shell__header {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1rem 2rem;
+  }
+
+  .app-shell__main {
+    padding: 2rem;
+  }
+}

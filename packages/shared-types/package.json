@@ -1,0 +1,22 @@
+{
+  "name": "@platform/shared-types",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Nominal (branded) domain primitives and cross-cutting types shared by every package.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "decimal.js": "^10.6.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  }
+}

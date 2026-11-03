@@ -1,0 +1,23 @@
+{
+  "name": "@platform/infra",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AWS CDK infrastructure (TypeScript).",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "synth": "cdk synth"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.220.0",
+    "constructs": "^10.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "aws-cdk": "^2.1030.0",
+    "tsx": "^4.20.0",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  }
+}

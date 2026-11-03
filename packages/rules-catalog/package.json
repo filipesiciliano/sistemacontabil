@@ -1,0 +1,21 @@
+{
+  "name": "@platform/rules-catalog",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tax rules as code: versioned parameters with official source, validity, scope, owner, tests and approval status.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@platform/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  }
+}

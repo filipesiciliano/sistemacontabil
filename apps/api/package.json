@@ -1,0 +1,29 @@
+{
+  "name": "@platform/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Modular monolith API running on AWS Lambda.",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run --config vitest.config.ts",
+    "test:integration": "vitest run --config vitest.integration.config.ts"
+  },
+  "dependencies": {
+    "@platform/rules-catalog": "workspace:*",
+    "@platform/shared-types": "workspace:*",
+    "@platform/tax-engine": "workspace:*",
+    "kysely": "^0.28.0",
+    "pg": "^8.16.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@testcontainers/postgresql": "^11.7.0",
+    "@types/aws-lambda": "^8.10.150",
+    "@types/node": "^22.19.0",
+    "@types/pg": "^8.15.0",
+    "testcontainers": "^11.7.0",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  }
+}

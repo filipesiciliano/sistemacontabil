@@ -1,0 +1,85 @@
+{
+  "caseId": "RC-000",
+  "title": "TEMPLATE - structure only, not a real case. Copy to RC-<number>.json and fill in.",
+  "scenarios": ["no_divergence"],
+  "anonymized": true,
+  "providedBy": "stakeholder-a",
+  "approval": { "status": "draft", "approvedBy": [] },
+  "competence": "2026-01",
+  "company": {
+    "activityStart": "2020-01-01",
+    "simplesOptionStart": "2020-01-01",
+    "establishments": [
+      {
+        "establishmentId": "EST-1",
+        "isHeadquarters": true,
+        "uf": "SP",
+        "municipality": "Municipality name"
+      }
+    ],
+    "activities": [
+      {
+        "cnae": "0000-0/00",
+        "description": "Practical description of the service actually provided",
+        "subjectToFactorR": true
+      }
+    ]
+  },
+  "revenueHistory": [
+    {
+      "competence": "2025-01",
+      "establishmentId": "EST-1",
+      "cnae": "0000-0/00",
+      "treatment": "standard",
+      "amount": "0.00"
+    }
+  ],
+  "payrollHistory": [
+    { "competence": "2025-01", "proLabore": "0.00", "salaries": "missing", "otherComponents": {} }
+  ],
+  "currentPeriodRevenue": [
+    {
+      "competence": "2026-01",
+      "establishmentId": "EST-1",
+      "cnae": "0000-0/00",
+      "treatment": "standard",
+      "amount": "0.00"
+    }
+  ],
+  "declared": {
+    "rbt12": "0.00",
+    "factorR": "missing",
+    "annex": "III",
+    "effectiveRate": "0",
+    "taxes": {
+      "IRPJ": "0.00",
+      "CSLL": "0.00",
+      "COFINS": "0.00",
+      "PIS_PASEP": "0.00",
+      "CPP": "0.00",
+      "ISS": "0.00"
+    },
+    "principal": "0.00",
+    "additions": { "fine": "0.00", "interest": "0.00" },
+    "total": "0.00"
+  },
+  "expected": {
+    "coverage": "covered",
+    "rbt12": "0.00",
+    "factorR": "missing",
+    "annex": "III",
+    "bracket": 1,
+    "effectiveRate": "0",
+    "taxes": {
+      "IRPJ": "0.00",
+      "CSLL": "0.00",
+      "COFINS": "0.00",
+      "PIS_PASEP": "0.00",
+      "CPP": "0.00",
+      "ISS": "0.00"
+    },
+    "principal": "0.00",
+    "differenceToDeclared": { "principal": "0.00", "additions": "0.00" },
+    "notes": "Explain the expected result and any known divergence."
+  }
+}
