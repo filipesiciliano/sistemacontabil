@@ -71,38 +71,38 @@ Exemplo central do briefing (ilustrativo, valores a confirmar): faltam R$ 50 de 
 
 Nenhuma alíquota, faixa, parcela a deduzir, limite ou repartição é implementada de memória. No catálogo de regras (`packages/rules-catalog`), todos esses valores estão como `PLACEHOLDER_*`, e as regras ficam em `draft` até receberem valor e fonte oficial dos responsáveis tributários.
 
-| Regra                 | Entendimento estrutural                                                                                                                       | Parâmetros pendentes                                                                                          |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| RBT12                 | Soma das receitas brutas dos 12 meses anteriores à competência, consolidada no CNPJ raiz (todos os estabelecimentos).                         | Tamanho da janela, tratamento de meses `Missing` (bloqueia a conclusão).                                      |
-| Início de atividade   | Quando há menos de 12 meses de atividade, aplica-se regra de proporcionalização.                                                              | `PLACEHOLDER_RBT12_START_OF_ACTIVITY`, com exemplos oficiais.                                                 |
-| Faixa                 | Faixa do anexo em que o RBT12 se enquadra.                                                                                                    | `PLACEHOLDER_ANNEX_III_BRACKETS`, `PLACEHOLDER_ANNEX_V_BRACKETS`.                                             |
-| Alíquota efetiva      | Fórmula do Manual do PGDAS-D.                                                                                                                 | `PLACEHOLDER_EFFECTIVE_RATE_FORMULA` e política de arredondamento.                                            |
-| Repartição            | Distribuição da alíquota efetiva por tributo, por faixa.                                                                                      | `PLACEHOLDER_ANNEX_*_DISTRIBUTION`, regra de teto do ISS.                                                     |
-| Fator R               | Atividades sujeitas ao Fator R vão para o Anexo III se a razão folha/receita atingir o limite; caso contrário, Anexo V.                       | Limite, comparação (`≥` ou `>`), componentes da folha, janelas, início de atividade, arredondamento da razão. |
-| Valor devido          | Receita segregada da competência × alíquota efetiva, repartida por tributo.                                                                   | Arredondamento por tributo e do total.                                                                        |
-| Conferência           | Apresentado × calculado, diferença com principal e acréscimos separados, possível causa e providência sugerida.                               | Tolerância de diferença (ver doc 07).                                                                         |
-| Multi-estabelecimento | RBT12 e faixa consolidados no CNPJ raiz; receita do mês segregada por estabelecimento quando a regra exigir (por exemplo, ISS por município). | Regras de segregação por município **[A CONFIRMAR]**.                                                         |
+| Regra                 | Entendimento estrutural                                                                                                                                                                                                         | Parâmetros pendentes                                                     |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| RBT12                 | Soma das receitas brutas dos 12 meses anteriores à competência, consolidada no CNPJ raiz (todos os estabelecimentos).                                                                                                           | Tamanho da janela, tratamento de meses `Missing` (bloqueia a conclusão). |
+| Início de atividade   | Quando há menos de 12 meses de atividade, aplica-se regra de proporcionalização.                                                                                                                                                | `PLACEHOLDER_RBT12_START_OF_ACTIVITY`, com exemplos oficiais.            |
+| Faixa                 | Faixa do anexo em que o RBT12 se enquadra.                                                                                                                                                                                      | `PLACEHOLDER_ANNEX_III_BRACKETS`, `PLACEHOLDER_ANNEX_V_BRACKETS`.        |
+| Alíquota efetiva      | Fórmula do Manual do PGDAS-D.                                                                                                                                                                                                   | `PLACEHOLDER_EFFECTIVE_RATE_FORMULA` e política de arredondamento.       |
+| Repartição            | Distribuição da alíquota efetiva por tributo, por faixa.                                                                                                                                                                        | `PLACEHOLDER_ANNEX_*_DISTRIBUTION`, regra de teto do ISS.                |
+| Fator R               | Atividades sujeitas ao Fator R vão para o Anexo III se a razão folha/receita atingir o limite (`≥`); caso contrário, Anexo V. Janela: 12 meses anteriores; folha por competência, com todos os itens da folha processada (D12). | Fonte oficial; precisão da razão antes da comparação.                    |
+| Valor devido          | Receita segregada da competência × alíquota efetiva, repartida por tributo.                                                                                                                                                     | Arredondamento por tributo e do total.                                   |
+| Conferência           | Apresentado × calculado, diferença com principal e acréscimos separados, possível causa e providência sugerida.                                                                                                                 | Tolerância provisória de R$ 0,01 por tributo (D15).                      |
+| Multi-estabelecimento | RBT12 e faixa consolidados no CNPJ raiz; receita do mês segregada por estabelecimento e por município de incidência do ISS. Municípios diferentes entram no POC (D16).                                                          | Regras de segregação do ISS por município **[A CONFIRMAR: fonte]**.      |
 
-### 3.1 Ponto crítico de entendimento sobre o Fator R **[A CONFIRMAR]**
+### 3.1 Competência-alvo do Fator R (respondido, D12)
 
-Entendimento preliminar: o Fator R de uma competência usa a folha e a receita dos **12 meses anteriores** a ela. Se isso se confirmar, o pró-labore pago na competência em aberto **M** não altera o anexo de **M**, mas altera o Fator R de **M+1** e das competências seguintes.
+Confirmado pelos stakeholders: o Fator R de uma competência usa a folha e a receita dos **12 meses anteriores** a ela, e a folha conta pela **competência**. O pró-labore da competência em aberto **M** não altera o anexo de M, mas altera o de **M+1** e das competências seguintes.
 
-Consequência para o alerta (doc 05): durante a competência M, o alerta projeta o enquadramento de M+1 em diante, usando a receita parcial de M e a folha de M. Essa leitura precisa ser validada antes de implementar o alerta, porque define a janela, o prazo para agir e o cenário comparado.
+Como a folha de M costuma ser processada até o início de M+1 (por exemplo, até o 5º dia útil), ainda é possível agir sobre a folha de M depois do fim do mês. Por isso, o prazo do alerta é a data de processamento da folha (D13), e não o último dia do mês.
 
 ## 4. Lacunas, riscos e perguntas remanescentes
 
 ### 4.1 Lacunas no escopo
 
-| #   | Lacuna                                                                            | Impacto                                                                    | Encaminhamento                                                         |
-| --- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| L1  | Valores oficiais das tabelas (Anexos III e V, repartição, limites).               | Bloqueia o motor real.                                                     | Responsáveis tributários fornecem valores com fonte (D3).              |
-| L2  | Critérios de precisão e arredondamento.                                           | Bloqueia o critério de aceite 1.                                           | Acordar conforme doc 07.                                               |
-| L3  | Casos de referência com PGDAS-D real.                                             | Sem gabarito, não há como validar o motor.                                 | Formato definido no doc 07.                                            |
-| L4  | Planilha padrão de importação (D6).                                               | Bloqueia MVP e orçamento.                                                  | Registrada como dependência no roadmap.                                |
-| L5  | Lista de atividades/CNAEs sujeitos ao Fator R no recorte.                         | Bloqueia o diagnóstico de cobertura.                                       | Stakeholders fornecem a lista e os critérios.                          |
-| L6  | Regime de caixa: o escopo cita recebimentos, mas o recorte do POC não o menciona. | Define se o POC aceita empresas optantes pelo regime de caixa.             | **[DECISÃO PENDENTE]**. Proposta: `specialist_review_required` no POC. |
-| L7  | Cálculo de multa e juros.                                                         | Define se a plataforma calcula acréscimos ou apenas compara os informados. | **[DECISÃO PENDENTE]**. Proposta: apenas comparar no POC.              |
-| L8  | Links das fontes oficiais não vieram na transcrição do escopo.                    | Rastreabilidade das regras.                                                | Stakeholders fornecem os links.                                        |
+| #   | Lacuna                                                              | Impacto                                                                    | Encaminhamento                                                            |
+| --- | ------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| L1  | Valores oficiais das tabelas (Anexos III e V, repartição, limites). | Bloqueia o motor real.                                                     | Responsáveis tributários fornecem valores com fonte (D3).                 |
+| L2  | Critérios de precisão e arredondamento.                             | Bloqueia o critério de aceite 1.                                           | Acordar conforme doc 07.                                                  |
+| L3  | Casos de referência com PGDAS-D real.                               | Sem gabarito, não há como validar o motor.                                 | Formato definido no doc 07.                                               |
+| L4  | Planilha padrão de importação (D6).                                 | Bloqueia MVP e orçamento.                                                  | Registrada como dependência no roadmap.                                   |
+| L5  | Lista de atividades/CNAEs sujeitos ao Fator R no recorte.           | Bloqueia o diagnóstico de cobertura.                                       | Stakeholders fornecem a lista e os critérios.                             |
+| L6  | Regime de caixa.                                                    | Definia se o POC aceita optantes pelo regime de caixa.                     | Respondido (D16): fora do POC, `specialist_review_required`.              |
+| L7  | Cálculo de multa e juros.                                           | Define se a plataforma calcula acréscimos ou apenas compara os informados. | Pergunta reformulada na rodada 2 (W14). Proposta: apenas comparar no POC. |
+| L8  | Links das fontes oficiais não vieram na transcrição do escopo.      | Rastreabilidade das regras.                                                | Stakeholders fornecem os links.                                           |
 
 ### 4.2 Riscos
 
@@ -119,28 +119,55 @@ Consequência para o alerta (doc 05): durante a competência M, o alerta projeta
 | Mudanças legislativas recentes (IBS/CBS a partir de 2027, tributação de dividendos na pessoa física). | Regras por vigência; efeito na PF tratado como premissa a ser revisada pelos stakeholders.                                   |
 | Nome do produto espalhado pelo código.                                                                | D11: escopo `@platform/*`, prefixo `platform`, uma única constante `PRODUCT_NAME`.                                           |
 
-### 4.3 Perguntas para os stakeholders
+### 4.3 Rodada 1: respostas recebidas (2026-11-04)
+
+As perguntas foram enviadas no grupo dos stakeholders numeradas de W1 a W17.
+
+| #   | Pergunta                                                    | Resposta                                                                                                                              | Registro                 |
+| --- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| W1  | O Fator R de M usa os 12 meses anteriores (reflexo em M+1)? | Sim. Com a folha processada até o 5º dia útil seguinte, dá para agir sobre a folha do mês corrente.                                   | D12                      |
+| W2  | O pró-labore conta pela competência ou pelo pagamento?      | Competência da folha.                                                                                                                 | D12                      |
+| W3  | Quais itens entram na folha?                                | Todos (pró-labore, salários, 13º, férias, FGTS, INSS patronal); conta o processamento da folha.                                       | D12                      |
+| W4  | 28,00% enquadra no Anexo III? Com quantas casas?            | Sim. Precisão: não sabem.                                                                                                             | D12 · precisão em aberto |
+| W5  | Fator R no início de atividade?                             | O primeiro mês de folha determina: folha do mês × 12, ajustada nos meses seguintes.                                                   | D12 · fonte pendente     |
+| W6  | Prazo prático para agir?                                    | Até o processamento da folha (no próprio mês ou no início do seguinte).                                                               | D13                      |
+| W7  | Como projetar a receita do mês?                             | Estimativa.                                                                                                                           | D13                      |
+| W8  | Alerta de pouca margem? Qual?                               | Sim, 28,10%.                                                                                                                          | D13                      |
+| W9  | Premissas de custo do pró-labore?                           | Todos os encargos compõem o custo com pessoal e entram nos 28%. Mostrar o impacto no IRPF e as deduções necessárias para amortizá-lo. | D14                      |
+| W10 | Arredondamento do PGDAS-D?                                  | Não sabem.                                                                                                                            | D15 · derivar dos casos  |
+| W11 | Diferença de centavos é divergência?                        | Tolerada, sem conseguir avaliar o impacto.                                                                                            | D15 (provisória)         |
+| W12 | ISS em municípios diferentes entra no POC?                  | Sim.                                                                                                                                  | D16                      |
+| W13 | Regime de caixa fora do POC?                                | Concordam; segundo eles, acaba para o Simples a partir do próximo ano.                                                                | D16 · fonte pendente     |
+| W14 | Multa e juros: calcular ou comparar?                        | Não entenderam a pergunta.                                                                                                            | Reformulada na rodada 2  |
+| W15 | Quais perfis com MFA?                                       | Deixar para depois.                                                                                                                   | D18                      |
+| W16 | Consultor depende de convite e autorização?                 | Sim.                                                                                                                                  | D17                      |
+| W17 | Retenção de documentos?                                     | 12 meses para os arquivos recebidos da empresa.                                                                                       | D19 · alcance pendente   |
+
+### 4.4 Rodada 2: perguntas remanescentes
 
 **Regras tributárias**
 
-1. O Fator R da competência M usa a folha e a receita dos 12 meses anteriores a M (item 3.1)? Em que momento o pró-labore conta: competência da folha ou data de pagamento?
-2. Quais componentes entram na folha do Fator R (pró-labore, salários, 13º, férias, FGTS, contribuição patronal)? Há algum que só entra se efetivamente pago?
-3. Atingir exatamente o limite enquadra no Anexo III? Com quantas casas decimais a razão é comparada? (Casos de 27,99% e 28,00%.)
-4. Como fica o Fator R no início de atividade, quando ainda não há 12 meses de folha?
-5. Qual é a regra de arredondamento de cada etapa: alíquota efetiva, valor por tributo, total do DAS?
-6. Qual é o tratamento do ISS para estabelecimentos em municípios diferentes no POC?
-7. A plataforma deve calcular multa e juros ou apenas comparar os valores informados?
-8. Empresas optantes pelo regime de caixa entram no POC?
+1. (W4) Com quantas casas decimais o Fator R é comparado com 28%? Por exemplo, 27,995% vira 28,00%? Se não souberem, os casos de 27,99% e 28,00% devem responder.
+2. (W5) Qual é a fonte oficial da anualização da folha no início de atividade? Ela vale da mesma forma para a receita (RBT12 proporcional)?
+3. (W14, reformulada) Quando o DAS é pago depois do vencimento, ele vem com multa e juros. A plataforma deve só **comparar** esses valores com os que a empresa informou ou deve **calcular** quanto seriam? Proposta: só comparar no POC.
+4. (W13) Qual é a fonte oficial do fim do regime de caixa para o Simples?
+5. (W12) Qual é a regra de segregação do ISS entre municípios (por local do estabelecimento ou por local da prestação)?
 
-**Alerta preditivo**
+**Alerta e pró-labore**
 
-9. Qual é o prazo prático para agir: último dia da competência, data de pagamento da folha ou data de transmissão do PGDAS-D da competência seguinte?
-10. Como projetar a receita que ainda falta no mês: só o lançado, um valor esperado informado pelo usuário ou a média histórica?
-11. Quais premissas usar para o custo do pró-labore (contribuição do sócio, IRPF, efeito sobre distribuição de lucros)? As regras recentes de tributação de dividendos devem entrar como premissa?
+6. (W6) A data de processamento da folha é fixa por empresa (por exemplo, "5º dia útil") ou muda todo mês?
+7. (W7) Sem estimativa de receita informada, qual valor sugerir: só o lançado ou a média dos últimos meses?
+8. (W9) A comparação com a retirada como lucro deve considerar a nova tributação de dividendos?
+9. (W9) O impacto no IRPF e as deduções necessárias entram já no POC ou ficam para o MVP?
 
-**Produto e operação**
+**Operação**
 
-12. Quais perfis exigem MFA? Proposta: Administrador, Consultor tributário e Contabilidade convidada, com Empresário/Gestor opcional.
-13. O Consultor tributário também depende de convite e autorização da empresa, como a contabilidade?
-14. Qual é a política de retenção e exclusão de documentos e dados (LGPD)?
-15. Quem atua como Administrador no POC: a equipe de desenvolvimento ou os stakeholders?
+10. (W17) Os 12 meses contam do envio do arquivo, da competência ou do fim da revisão? A empresa pode pedir a exclusão antes?
+11. Quem atua como Administrador no POC: a equipe de desenvolvimento ou os stakeholders?
+
+**Insumos ainda não recebidos** (bloqueiam o motor)
+
+- Tabelas dos Anexos III e V (faixas, alíquotas nominais, parcelas a deduzir e repartição), com fonte oficial.
+- Lista de CNAEs/atividades sujeitos ao Fator R no recorte.
+- Casos de referência com PGDAS-D real, na lista mínima do doc 07.
+- Links das fontes oficiais citadas no escopo.

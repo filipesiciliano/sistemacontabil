@@ -39,20 +39,23 @@ export const factorRV1: RuleDefinition<{
     ),
     comparison: placeholder(
       'PLACEHOLDER_FACTOR_R_COMPARISON',
-      'Whether reaching exactly the threshold qualifies (reference cases at 27.99% and 28.00%).',
+      'Stakeholders answered greater_or_equal (D12); official source pending.',
     ),
-    windowMonths: placeholder('PLACEHOLDER_FACTOR_R_WINDOW', 'Length of the payroll window.'),
+    windowMonths: placeholder(
+      'PLACEHOLDER_FACTOR_R_WINDOW',
+      'Stakeholders answered: 12 competences before the target, payroll by competence (D12); official source pending.',
+    ),
     payrollComponents: placeholder(
       'PLACEHOLDER_FACTOR_R_PAYROLL_COMPONENTS',
-      'Exhaustive list of payroll items that compose the numerator.',
+      'Stakeholders answered: every item of the processed payroll (pro-labore, salaries, 13th salary, vacation, FGTS, employer INSS) (D12); official source pending.',
     ),
     startOfActivityRule: placeholder(
       'PLACEHOLDER_FACTOR_R_START_OF_ACTIVITY',
-      'Treatment of Fator R in the first months of activity.',
+      'Stakeholders answered: first month payroll x 12, adjusted as months accrue (D12); official source pending.',
     ),
     ratioRounding: placeholder(
       'PLACEHOLDER_FACTOR_R_RATIO_ROUNDING',
-      'Precision/rounding used when comparing the ratio with the threshold.',
+      'Unknown to stakeholders (D15); to be derived from reference cases at 27.99% and 28.00%.',
     ),
   },
 };

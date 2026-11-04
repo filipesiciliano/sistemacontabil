@@ -1,6 +1,6 @@
 # 02 · Arquitetura proposta
 
-> Base: escopo §7 e §8, decisões D1–D11 ([`04-registro-de-decisoes.md`](04-registro-de-decisoes.md)) e a stack definida no briefing. Itens marcados **[DECISÃO PENDENTE]** trazem opções e uma recomendação, mas só viram decisão depois do debate.
+> Base: escopo §7 e §8, decisões D1–D19 ([`04-registro-de-decisoes.md`](04-registro-de-decisoes.md)) e a stack definida no briefing. Itens marcados **[DECISÃO PENDENTE]** trazem opções e uma recomendação, mas só viram decisão depois do debate.
 
 ## 1. Visão geral
 
@@ -151,26 +151,26 @@ Recomendação: **C**. O código já está organizado para permitir migrar um m�
 ## 6. Identidade e autorização
 
 - Cognito User Pool, com o JWT validado no API Gateway. O papel do usuário (`Role`) é global. O acesso a cada empresa é uma **concessão** (grant) guardada no banco, criada por convite e autorizada pela empresa.
-- **[DECISÃO PENDENTE] MFA para perfis privilegiados.** No Cognito, o MFA é configurado por pool. Opções: (a) MFA `OPTIONAL` no pool, e a API recusa perfis privilegiados sem MFA registrado (verificando o fator no token/claims); (b) dois pools, um para perfis privilegiados com MFA `REQUIRED`; (c) MFA `REQUIRED` para todos. Recomendação: (a), com TOTP. Os perfis privilegiados estão em aberto (pergunta 12 do doc 01).
+- **MFA adiado para depois do POC (D18).** O pool do Cognito nasce com MFA `OPTIONAL` e a aplicação não o exige no POC, para que ele possa ser ligado no MVP sem migrar usuários. Quais perfis o exigirão (P4) fica para essa etapa.
 - **[DECISÃO PENDENTE] Matriz de permissões** dos quatro perfis. Proposta inicial:
 
-| Ação                               | Empresário/Gestor | Contabilidade convidada | Consultor tributário | Administrador                                                     |
-| ---------------------------------- | ----------------- | ----------------------- | -------------------- | ----------------------------------------------------------------- |
-| Cadastrar/editar dados da empresa  | ✔                 | ✔ (se autorizada)       | —                    | —                                                                 |
-| Confirmar dados                    | ✔                 | ✔ (se autorizada)       | —                    | —                                                                 |
-| Ver conferência e alertas          | ✔                 | ✔ (se autorizada)       | ✔ (se autorizado)    | —                                                                 |
-| Convidar e revogar contabilidade   | ✔                 | —                       | —                    | —                                                                 |
-| Registrar revisão e conclusão      | —                 | ✔                       | ✔ (parecer)          | —                                                                 |
-| Validar oportunidade               | —                 | ✔                       | ✔                    | —                                                                 |
-| Gerenciar usuários e configurações | —                 | —                       | —                    | ✔                                                                 |
-| Ver dados de empresas              | só as próprias    | só as autorizadas       | só as autorizadas    | **[DECISÃO PENDENTE]** (proposta: nenhum, salvo suporte auditado) |
+| Ação                               | Empresário/Gestor | Contabilidade convidada | Consultor tributário   | Administrador                                                     |
+| ---------------------------------- | ----------------- | ----------------------- | ---------------------- | ----------------------------------------------------------------- |
+| Cadastrar/editar dados da empresa  | ✔                 | ✔ (se autorizada)       | —                      | —                                                                 |
+| Confirmar dados                    | ✔                 | ✔ (se autorizada)       | —                      | —                                                                 |
+| Ver conferência e alertas          | ✔                 | ✔ (se autorizada)       | ✔ (se autorizado, D17) | —                                                                 |
+| Convidar e revogar contabilidade   | ✔                 | —                       | —                      | —                                                                 |
+| Registrar revisão e conclusão      | —                 | ✔                       | ✔ (parecer)            | —                                                                 |
+| Validar oportunidade               | —                 | ✔                       | ✔                      | —                                                                 |
+| Gerenciar usuários e configurações | —                 | —                       | —                      | ✔                                                                 |
+| Ver dados de empresas              | só as próprias    | só as autorizadas       | só as autorizadas      | **[DECISÃO PENDENTE]** (proposta: nenhum, salvo suporte auditado) |
 
 As versões das regras são publicadas por PR e deploy (D9). O Administrador as consulta, mas não as edita pela interface.
 
 ## 7. Processamento assíncrono e arquivos
 
 - **SQS (com DLQ):** recálculo de alertas a cada lançamento, se o síncrono não bastar; projeções longas; no futuro, importação e extração. Mensagens idempotentes, com `companyId` e `competence`.
-- **S3:** evidências (PGDAS-D, DAS, comprovantes), com criptografia, bloqueio de acesso público, versionamento e retenção em produção (`infra/src/stacks/evidence-storage-stack.ts`). **[DECISÃO PENDENTE]** Política de retenção e exclusão (LGPD) e chave KMS própria (CMK) em vez de SSE-S3.
+- **S3:** evidências (PGDAS-D, DAS, comprovantes), com criptografia, bloqueio de acesso público, versionamento e retenção em produção (`infra/src/stacks/evidence-storage-stack.ts`). Retenção de **12 meses** para os arquivos recebidos da empresa (D19), via regra de ciclo de vida do bucket. **[DECISÃO PENDENTE]** Início da contagem, exclusão antecipada a pedido da empresa (LGPD) e chave KMS própria (CMK) em vez de SSE-S3.
 
 ## 8. Frontend
 
@@ -203,16 +203,16 @@ Se o Docker Hub estiver inacessível, use `POSTGRES_TEST_IMAGE` para apontar par
 
 ## 11. Resumo das decisões pendentes
 
-| #   | Tema                                     | Recomendação                                                 |
-| --- | ---------------------------------------- | ------------------------------------------------------------ |
-| P1  | Módulos × Lambdas                        | C (HTTP único e workers por fila)                            |
-| P2  | Isolamento entre empresas                | Aplicação e RLS                                              |
-| P3  | Conexão Lambda → Aurora                  | RDS Proxy com `pg`                                           |
-| P4  | MFA por perfil                           | Pool `OPTIONAL` e exigência na API para perfis privilegiados |
-| P5  | Matriz de permissões                     | Proposta na seção 6                                          |
-| P6  | Contratos API ↔ web                      | Pacote `@platform/api-contracts` com Zod                     |
-| P7  | Proteção do fluxo de aprovação de regras | CODEOWNERS                                                   |
-| P8  | Retenção de documentos e CMK             | A definir com os stakeholders (LGPD)                         |
-| P9  | Contas, região, CI/CD, observabilidade   | `sa-east-1`, GitHub Actions com OIDC                         |
-| P10 | Versão do PostgreSQL                     | Igual no Aurora e nos testes                                 |
-| P11 | Roteamento e UI do web                   | A definir                                                    |
+| #   | Tema                                     | Recomendação                                                                                     |
+| --- | ---------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| P1  | Módulos × Lambdas                        | C (HTTP único e workers por fila)                                                                |
+| P2  | Isolamento entre empresas                | Aplicação e RLS                                                                                  |
+| P3  | Conexão Lambda → Aurora                  | RDS Proxy com `pg`                                                                               |
+| P4  | MFA por perfil                           | Adiado para o MVP (D18)                                                                          |
+| P5  | Matriz de permissões                     | Proposta na seção 6                                                                              |
+| P6  | Contratos API ↔ web                      | Pacote `@platform/api-contracts` com Zod                                                         |
+| P7  | Proteção do fluxo de aprovação de regras | CODEOWNERS                                                                                       |
+| P8  | Retenção de documentos e CMK             | 12 meses para arquivos da empresa (D19); início da contagem, exclusão antecipada e CMK em aberto |
+| P9  | Contas, região, CI/CD, observabilidade   | `sa-east-1`, GitHub Actions com OIDC                                                             |
+| P10 | Versão do PostgreSQL                     | Igual no Aurora e nos testes                                                                     |
+| P11 | Roteamento e UI do web                   | A definir                                                                                        |

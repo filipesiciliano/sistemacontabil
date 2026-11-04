@@ -7,7 +7,7 @@ Convenções e princípios do repositório. Valem para qualquer pessoa ou agente
 Plataforma de inteligência tributária para empresas do Simples Nacional (fora do SIMEI). Ela confere a apuração, identifica oportunidades e projeta tributos. O diferencial é **alertar durante a competência, enquanto ainda dá para agir** (D1).
 
 - Fonte da verdade: `docs/00-escopo-stakeholders.md`. **Nunca altere este arquivo.**
-- Decisões: `docs/04-registro-de-decisoes.md` (D1–D11). Decisões em aberto: **[DECISÃO PENDENTE]** em `docs/02-arquitetura-proposta.md`.
+- Decisões: `docs/04-registro-de-decisoes.md` (D1–D19). Decisões em aberto: **[DECISÃO PENDENTE]** em `docs/02-arquitetura-proposta.md`.
 - **Nome do produto não definido (D11).** Não escreva nome de produto em código, pacotes, infraestrutura ou documentação. Use o escopo `@platform/*`, o prefixo `platform` na AWS e a constante `PRODUCT_NAME` (`apps/web/src/i18n/product-name.ts`, `PLACEHOLDER`). "Crivo" é o escritório de um stakeholder, não o produto.
 
 ## Regras de trabalho
@@ -34,7 +34,7 @@ Plataforma de inteligência tributária para empresas do Simples Nacional (fora 
 
 - TypeScript 100%, `strict: true` e flags extras (`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`…; ver `tsconfig.base.json`).
 - Frontend: React, Vite e TanStack Query, com layout responsivo (desktop e celular).
-- Backend: Node.js em AWS Lambda, num monólito modular. PostgreSQL (Aurora Serverless v2) com **Kysely** (proposta, ver doc 02). Cognito (MFA para perfis privilegiados), SQS e S3.
+- Backend: Node.js em AWS Lambda, num monólito modular. PostgreSQL (Aurora Serverless v2) com **Kysely** (proposta, ver doc 02). Cognito (MFA adiado para depois do POC, D18), SQS e S3.
 - Infra: AWS CDK em TypeScript (`infra/`).
 - Validação nas bordas com Zod. Tipos nominais via `.brand<...>()` do Zod: `Cnpj`, `Cnae`, `Competence` (`AAAA-MM`), `Money`, `Rate`, `CompanyId`…
 
