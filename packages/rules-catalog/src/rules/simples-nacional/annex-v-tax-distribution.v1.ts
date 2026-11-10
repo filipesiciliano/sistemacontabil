@@ -30,7 +30,7 @@ export const annexVTaxDistributionV1: RuleDefinition<{
     ),
     issCapRule: placeholder(
       'PLACEHOLDER_ANNEX_V_ISS_CAP_RULE',
-      'Whether and how the ISS share is capped and redistributed, with official source.',
+      'PGDAS-D manual section 8.1 states a general 5% cap on the effective ISS share; examples cover Annex III only. Stakeholders to confirm it applies to Annex V.',
     ),
   },
 };

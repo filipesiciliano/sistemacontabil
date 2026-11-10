@@ -25,7 +25,9 @@ Durante a competência em aberto, avisar quando o Fator R projetado ficar abaixo
 - a comparação de cenários (Anexo III × Anexo V);
 - o custo estimado do aumento, com encargos e efeito na pessoa física declarados como premissas.
 
-### 2.2 Competência-alvo (confirmada, D12)
+### 2.2 Competência-alvo (D12; **em conflito com a fonte oficial, D25**)
+
+> **Atenção:** o Manual do PGDAS-D diz que a folha do Fator R conta pelas remunerações **pagas** (regime de caixa). Se isso prevalecer sobre a resposta dos stakeholders (competência), o pró-labore da competência M pago no 5º dia útil de M+1 só afeta o Fator R de **M+2**, e o prazo passa a ser a data de pagamento. A especificação abaixo segue D12 até a resposta.
 
 Confirmado pelos stakeholders: o Fator R da competência **T** usa a folha e a receita dos 12 meses anteriores a T, e a folha conta pela competência. Portanto:
 
@@ -64,8 +66,8 @@ Notação: `M` = competência aberta, `T` = competência-alvo, `W = windowFor(T)
 1. **Receita de M projetada:** `R(M) = receita lançada em M + estimativa do restante de M`, com a estimativa **informada pelo usuário** (D13). Sem estimativa, a sugestão padrão para o restante do mês usa a **média mensal da receita lançada nos últimos 12 meses** (D22, interpretação a confirmar), exibida como premissa editável. Mostrar sempre a sensibilidade: "se a receita do mês fechar em X, faltarão Y".
 2. **Folha de M projetada:** `F(M) = folha já lançada em M + folha prevista e informada para M`, somando todos os itens da folha processada: pró-labore, salários, 13º, férias, FGTS e INSS patronal (D12). Só entra o que o usuário informar.
 3. **Bases da janela:** `Folha12 = Σ F(w)` e `Receita12 = Σ R(w)` para `w ∈ W`, consolidadas no CNPJ raiz. Meses fechados usam valores `Informed` ou `Confirmed`. A memória indica o estado de cada mês.
-4. **Fator R projetado:** `FRp = Folha12 ÷ Receita12`, com a precisão e o arredondamento da regra (`PLACEHOLDER_FACTOR_R_RATIO_ROUNDING`). Com `Receita12 = 0`, o tratamento é **[A CONFIRMAR]** (e o alerta fica em `insufficient_data` até lá).
-5. **Quanto falta na base da folha:** `ΔFolha = max(0, L × Receita12 − Folha12)`. A comparação é `≥` (D12), então atingir exatamente `L` basta.
+4. **Fator R projetado:** `FRp = Folha12 ÷ Receita12`, **truncado em duas casas decimais** (Manual do PGDAS-D, 8.2.1; D25). Bases zeradas: `Folha12 = 0` → 0,01; `Receita12 = 0` com `Folha12 > 0` → 0,28. No mês de abertura, usa folha e receita do próprio PA; com menos de 13 meses de atividade, soma desde a abertura até o mês anterior. A receita inclui o mercado externo.
+5. **Quanto falta na base da folha:** `ΔFolha = max(0, L × Receita12 − Folha12)`. Como o truncamento só afeta valores abaixo de `L`, atingir exatamente `L × Receita12` basta. A comparação é `≥` (D12), então atingir exatamente `L` basta.
 6. **Conversão para pró-labore bruto:** como os encargos sobre o pró-labore também entram na folha do Fator R (D12), `ΔP = ΔFolha ÷ (1 + e)`, em que `e` é a soma dos encargos que incidem sobre o pró-labore e entram na folha (`PLACEHOLDER_PROLABORE_PAYROLL_CHARGES`). Logo, `ΔP` é menor que `ΔFolha`.
 7. **Cenários para T:** com a receita projetada de T (premissa de projeção), calcular RBT12, faixa, alíquota efetiva e DAS estimado em dois cenários:
    - **III:** pró-labore aumentado em `ΔP` (Fator R atinge `L`);

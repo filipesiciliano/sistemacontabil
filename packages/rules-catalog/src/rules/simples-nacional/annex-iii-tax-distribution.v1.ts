@@ -1,4 +1,4 @@
-import { placeholder, type Parameter } from '../../rule/parameter.js';
+import { defined, placeholder, type Parameter } from '../../rule/parameter.js';
 import type { RuleDefinition } from '../../rule/rule-definition.js';
 import { DRAFT_APPROVAL, PLACEHOLDER_VALIDITY, TAX_RESPONSIBLES } from '../draft-defaults.js';
 import type { BracketTaxShares } from './parameters/tax-share.js';
@@ -28,9 +28,8 @@ export const annexIiiTaxDistributionV1: RuleDefinition<{
       'PLACEHOLDER_ANNEX_III_DISTRIBUTION',
       'Share of each tax per bracket, with official source.',
     ),
-    issCapRule: placeholder(
-      'PLACEHOLDER_ANNEX_III_ISS_CAP_RULE',
-      'Whether and how the ISS share is capped and redistributed, with official source.',
+    issCapRule: defined(
+      'Effective ISS share is capped at 5%; the excess is transferred proportionally to the federal taxes of the same bracket (PGDAS-D manual, section 8.1).',
     ),
   },
 };

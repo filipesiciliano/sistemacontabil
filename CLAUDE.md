@@ -7,14 +7,14 @@ Convenções e princípios do repositório. Valem para qualquer pessoa ou agente
 Plataforma de inteligência tributária para empresas do Simples Nacional (fora do SIMEI). Ela confere a apuração, identifica oportunidades e projeta tributos. O diferencial é **alertar durante a competência, enquanto ainda dá para agir** (D1).
 
 - Fonte da verdade: `docs/00-escopo-stakeholders.md`. **Nunca altere este arquivo.**
-- Decisões: `docs/04-registro-de-decisoes.md` (D1–D24). Decisões em aberto: **[DECISÃO PENDENTE]** em `docs/02-arquitetura-proposta.md`.
+- Decisões: `docs/04-registro-de-decisoes.md` (D1–D25). Decisões em aberto: **[DECISÃO PENDENTE]** em `docs/02-arquitetura-proposta.md`.
 - **Nome do produto não definido (D11).** Não escreva nome de produto em código, pacotes, infraestrutura ou documentação. Use o escopo `@platform/*`, o prefixo `platform` na AWS e a constante `PRODUCT_NAME` (`apps/web/src/i18n/product-name.ts`, `PLACEHOLDER`). "Crivo" é o escritório de um stakeholder, não o produto.
 
 ## Regras de trabalho
 
 - Diagnóstico antes de implementação.
 - **Não tome decisões fiscais ou de produto.** Registre como pergunta (doc 01), **[A CONFIRMAR]** ou **[DECISÃO PENDENTE]**.
-- **Nunca implemente alíquotas, faixas, parcelas a deduzir, limites ou repartições de memória.** Use `placeholder('PLACEHOLDER_...', '...')` no catálogo. Os valores reais vêm dos responsáveis tributários (os stakeholders, D3), com fonte oficial.
+- **Nunca implemente alíquotas, faixas, parcelas a deduzir, limites ou repartições de memória.** Enquanto não houver fonte, use `placeholder('PLACEHOLDER_...', '...')` no catálogo. Os valores são transcritos da fonte oficial (com documento, seção, vigência e link) e conferidos pelos responsáveis tributários antes da aprovação (D3, D25).
 
 ## Princípios de domínio (inegociáveis)
 

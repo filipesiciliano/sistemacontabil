@@ -1,6 +1,6 @@
 # 02 · Arquitetura proposta
 
-> Base: escopo §7 e §8, decisões D1–D24 ([`04-registro-de-decisoes.md`](04-registro-de-decisoes.md)) e a stack definida no briefing. Itens marcados **[DECISÃO PENDENTE]** trazem opções e uma recomendação, mas só viram decisão depois do debate.
+> Base: escopo §7 e §8, decisões D1–D25 ([`04-registro-de-decisoes.md`](04-registro-de-decisoes.md)) e a stack definida no briefing. Itens marcados **[DECISÃO PENDENTE]** trazem opções e uma recomendação, mas só viram decisão depois do debate.
 
 ## 1. Visão geral
 

@@ -28,6 +28,7 @@
 | D22 | Processamento da folha e receita sugerida no alerta                        | Aprovada                                        |
 | D23 | Efeito na pessoa física fica para o MVP, sem comparação com dividendos     | Aprovada                                        |
 | D24 | Arquivos descartados após o processamento                                  | Aprovada                                        |
+| D25 | Regras transcritas da fonte oficial e conferidas pelos stakeholders        | Aprovada                                        |
 
 ---
 
@@ -300,3 +301,22 @@ Ficam fora (como próximas etapas): importação por planilha, extração de doc
 - **[DECISÃO PENDENTE]** O que conta como "processado": dados extraídos e **confirmados** pelo usuário (proposta), conferência concluída ou fluxo de revisão encerrado.
 - **Risco:** o escopo (§5.6) prevê registrar evidências no fluxo de revisão com a contabilidade. Se o arquivo for apagado antes da revisão, a contabilidade perde o documento de origem. Proposta: apagar só depois da conclusão da revisão, quando houver uma em andamento.
 - No POC, o PGDAS-D é digitado (D5). Os arquivos se limitam a evidências anexadas na revisão.
+
+---
+
+## D25 · Regras transcritas da fonte oficial e conferidas pelos stakeholders
+
+**Contexto.** As tabelas e regras do Simples Nacional são públicas. O responsável pelo produto perguntou se poderiam ser obtidas na internet e indicou a página de legislação do Simples Nacional na Receita Federal. D3 previa que os stakeholders fornecessem os valores.
+
+**Decisão.** A equipe de desenvolvimento **transcreve** as regras da fonte oficial para o catálogo, citando documento, seção, vigência e link. As regras ficam `draft` até os stakeholders **conferirem** a transcrição. A aprovação continua no fluxo de PR (D9). Os stakeholders deixam de ser a fonte dos valores e passam a ser os revisores da transcrição; continuam sendo a fonte dos casos de referência (D3).
+
+**Consequências.**
+
+- Primeira transcrição (2026-11-10), a partir do **Manual do PGDAS-D** (Receita Federal, 2018 v4, arquivo atualizado em 2025-06-17), seções 8.1 a 8.3:
+  - Fator R: limite `≥ 0,28`; janela de 12 meses anteriores; **duas casas decimais, sem arredondamento**, desde 04/2018 (0,2774 → 0,27); FS12 = 0 → 0,01; RBT12 = 0 com FS12 > 0 → 0,28; mês de abertura usa folha e receita do próprio PA; com menos de 13 meses, soma desde a abertura até o mês anterior; a RBT12 inclui mercado externo.
+  - RBT12: no início de atividade, primeiro mês × 12 e, nos 11 meses seguintes, média dos meses anteriores × 12; fórmula da alíquota efetiva; RBT12 = 0 → considerar 1.
+  - ISS: percentual efetivo máximo de 5%, com redistribuição proporcional aos tributos federais (aplicação ao Anexo V a confirmar).
+- **Conflito com D12:** o manual diz que a FS12 inclui as remunerações **pagas** nos 12 meses anteriores (regime de caixa, informadas em GFIP/eSocial). Os stakeholders responderam **competência da folha** (W2). Se valer o regime de caixa, o pró-labore de M pago no 5º dia útil de M+1 só entra no Fator R de M+2. Isso muda a competência-alvo e o prazo do alerta (D13, D22). `payrollComponents` segue `PLACEHOLDER` até a resposta.
+- R2-1 (precisão do Fator R) fica respondida pela fonte oficial: o caso de 27,99% resulta em 0,27 → Anexo V.
+- **Bloqueio:** as tabelas de faixas, alíquotas nominais, parcelas a deduzir e repartição estão nos anexos da LC 123/2006 (site do Planalto) e da Resolução CGSN 140/2018 (site de normas da Receita). O Planalto recusa acesso automatizado, e o site de normas monta a página por JavaScript. É preciso baixar esses textos pelo navegador e anexá-los, ou os stakeholders enviarem.
+- A lista oficial de atividades sujeitas ao Fator R (Resolução CGSN 140/2018, art. 25, §1º, V) está no manual. A correlação com CNAEs continua dependendo dos stakeholders, porque não há tabela oficial CNAE → Fator R.

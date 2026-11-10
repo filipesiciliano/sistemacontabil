@@ -1,61 +1,68 @@
-import { placeholder, type Parameter } from '../../rule/parameter.js';
+import { competence } from '@platform/shared-types';
+import { defined, placeholder, type Parameter } from '../../rule/parameter.js';
 import type { RuleDefinition } from '../../rule/rule-definition.js';
-import { DRAFT_APPROVAL, PLACEHOLDER_VALIDITY, TAX_RESPONSIBLES } from '../draft-defaults.js';
+import { DRAFT_APPROVAL, TAX_RESPONSIBLES } from '../draft-defaults.js';
+import { pgdasDManualSource } from './sources/pgdas-d-manual.js';
 
+/**
+ * Transcribed from the official PGDAS-D manual (D25). Stays `draft` until the tax responsibles
+ * check the transcription. Starts at 2018-04 because the ratio was rounded, not truncated,
+ * from 2018-01 to 2018-03.
+ */
 export const factorRV1: RuleDefinition<{
   /** Fator R threshold as a fraction. */
   readonly threshold: Parameter<string>;
-  /** Comparison operator applied to the threshold (e.g. "greater_or_equal"). */
+  /** Comparison operator applied to the threshold. */
   readonly comparison: Parameter<'greater_or_equal' | 'greater_than'>;
-  /** Number of months that compose the payroll and revenue windows. */
+  /** Number of months before the competence that compose the payroll and revenue windows. */
   readonly windowMonths: Parameter<number>;
-  /** Payroll components that enter the numerator (pró-labore, salaries, eligible charges...). */
+  /** Payroll items that enter the numerator and the event that makes them count. */
   readonly payrollComponents: Parameter<readonly string[]>;
-  /** How the windows behave for companies in their first months of activity. */
+  /** How the ratio is computed for companies in their first months of activity. */
   readonly startOfActivityRule: Parameter<string>;
-  /** Whether the ratio is rounded/truncated before comparison, and how. */
-  readonly ratioRounding: Parameter<string>;
+  /** Precision applied to the ratio before the comparison. */
+  readonly ratioRounding: Parameter<{ readonly decimalPlaces: number; readonly mode: 'truncate' }>;
+  /** Values assumed when payroll or revenue windows are zero. */
+  readonly zeroBaseRules: Parameter<readonly string[]>;
+  /** Whether export revenue enters the RBT12 used in the ratio. */
+  readonly revenueIncludesExports: Parameter<boolean>;
 }> = {
   id: 'simples-nacional.factor-r',
   version: 1,
   title: 'Fator R: payroll-to-revenue ratio deciding between Annex III and Annex V',
-  officialSource: placeholder(
-    'PLACEHOLDER_FACTOR_R_SOURCE',
-    'Legal provision defining Fator R, its components and threshold.',
-  ),
-  validity: PLACEHOLDER_VALIDITY,
+  officialSource: {
+    kind: 'defined',
+    value: pgdasDManualSource(
+      'Section 8.2.1 (Resolução CGSN 140/2018, art. 26; LC 123/2006, art. 18, §§ 5º-J and 5º-M)',
+    ),
+  },
+  validity: { from: competence('2018-04') },
   scope: {
     regime: 'simples_nacional',
     annexes: ['III', 'V'],
-    description: 'Service activities subject to Fator R.',
+    description:
+      'Service activities subject to Fator R (Resolução CGSN 140/2018, art. 25, § 1º, V; list in PGDAS-D manual section 8).',
   },
   owner: TAX_RESPONSIBLES,
   referenceCaseIds: [],
   approval: DRAFT_APPROVAL,
   parameters: {
-    threshold: placeholder(
-      'PLACEHOLDER_FACTOR_R_THRESHOLD',
-      'Threshold value with official source.',
-    ),
-    comparison: placeholder(
-      'PLACEHOLDER_FACTOR_R_COMPARISON',
-      'Stakeholders answered greater_or_equal (D12); official source pending.',
-    ),
-    windowMonths: placeholder(
-      'PLACEHOLDER_FACTOR_R_WINDOW',
-      'Stakeholders answered: 12 competences before the target, payroll by competence (D12); official source pending.',
-    ),
+    threshold: defined('0.28'),
+    comparison: defined('greater_or_equal'),
+    windowMonths: defined(12),
     payrollComponents: placeholder(
       'PLACEHOLDER_FACTOR_R_PAYROLL_COMPONENTS',
-      'Stakeholders answered: every item of the processed payroll (pro-labore, salaries, 13th salary, vacation, FGTS, employer INSS) (D12); official source pending.',
+      'CONFLICT (D25): the manual counts remuneration PAID in the 12 previous months (cash basis, GFIP/eSocial); stakeholders answered payroll competence (D12). Pending stakeholder review.',
     ),
-    startOfActivityRule: placeholder(
-      'PLACEHOLDER_FACTOR_R_START_OF_ACTIVITY',
-      'Stakeholders answered: follows the revenue start-of-activity rule of LC 123/2006 (first month payroll x 12, adjusted as months accrue) (D12, D20); official text pending.',
+    startOfActivityRule: defined(
+      'Opening month: payroll of the period / revenue of the period. While fewer than 13 months have elapsed since opening: sum of payroll / sum of revenue from the opening month to the month before the period.',
     ),
-    ratioRounding: placeholder(
-      'PLACEHOLDER_FACTOR_R_RATIO_ROUNDING',
-      'Unknown to stakeholders (D15); to be derived from reference cases at 27.99% and 28.00%.',
-    ),
+    ratioRounding: defined({ decimalPlaces: 2, mode: 'truncate' }),
+    zeroBaseRules: defined([
+      'payroll = 0 and revenue = 0 -> 0.01',
+      'payroll = 0 and revenue > 0 -> 0.01',
+      'payroll > 0 and revenue = 0 -> 0.28',
+    ]),
+    revenueIncludesExports: defined(true),
   },
 };
