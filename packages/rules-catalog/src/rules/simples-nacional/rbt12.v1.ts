@@ -8,8 +8,10 @@ import { pgdasDManualSource } from './sources/pgdas-d-manual.js';
 export const rbt12V1: RuleDefinition<{
   /** Number of months preceding the competence that compose the accumulated revenue. */
   readonly windowMonths: Parameter<number>;
-  /** Proportionalization rule (RBT12p) for companies in their first 12 months of activity. */
-  readonly startOfActivityRule: Parameter<string>;
+  /** Proportionalization method (RBT12p) for the first 12 months of activity (PGDAS-D manual 8.3). */
+  readonly startOfActivityMethod: Parameter<'first_month_times_12_then_average_times_12'>;
+  /** Multiplier applied to the period revenue or to the average in the RBT12p method. */
+  readonly annualizationFactor: Parameter<number>;
   /** Effective rate formula, as published in the official manual. */
   readonly effectiveRateFormula: Parameter<string>;
   /** RBT12 value assumed in the effective rate formula when the accumulated revenue is zero. */
@@ -35,9 +37,8 @@ export const rbt12V1: RuleDefinition<{
   approval: DRAFT_APPROVAL,
   parameters: {
     windowMonths: defined(12),
-    startOfActivityRule: defined(
-      'First month of activity: revenue of the period x 12. Next 11 months: arithmetic mean of the revenue of the months before the period x 12. The activity start date is the opening date in the CNPJ registry.',
-    ),
+    startOfActivityMethod: defined('first_month_times_12_then_average_times_12'),
+    annualizationFactor: defined(12),
     effectiveRateFormula: defined(
       '((RBT12 x nominal rate of the bracket) - deduction of the bracket) / RBT12',
     ),

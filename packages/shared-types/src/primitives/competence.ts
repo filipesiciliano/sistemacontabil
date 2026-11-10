@@ -45,3 +45,10 @@ export function competenceRange(from: Competence, to: Competence): Competence[] 
   }
   return result;
 }
+
+/** Number of months from `from` to `to` (negative when `to` precedes `from`). */
+export function monthsBetween(from: Competence, to: Competence): number {
+  const a = competenceParts(from);
+  const b = competenceParts(to);
+  return (b.year - a.year) * 12 + (b.month - a.month);
+}

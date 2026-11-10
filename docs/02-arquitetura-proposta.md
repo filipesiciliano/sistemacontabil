@@ -83,6 +83,17 @@ Regras adicionais:
 - O resultado inclui `CoverageDiagnosis`, `CalculationMemory` (passos com fórmula, entradas, resultado, `ruleRef` e arredondamento) e o valor calculado. A API encapsula tudo num `CalculationSnapshot`.
 - IA nunca produz valor de imposto (escopo §5.2). Ela pode, no futuro, extrair documentos (sempre com confirmação) e explicar resultados.
 
+**Implementação (v0.1, 2026-11-10).** Ponto de entrada: `calculateAssessment(input, rules)`.
+
+1. `resolveTaxRuleSet(competência, { allowUnapproved })` seleciona no catálogo a versão de cada regra vigente e converte os parâmetros para `Decimal`. Qualquer placeholder deixa o conjunto "não resolvido": o motor não calcula sem fonte. `allowUnapproved` só pode ser usado fora de produção, e o resultado sai com `rulesApproved = false` ("regras em validação").
+2. Diagnóstico de cobertura: opção pelo Simples, regime de caixa, classificação das atividades, tratamentos especiais da receita e sublimite (RBAA ou RBA, incluindo o mês, acima de R$ 3,6 milhões). No ano de início de atividade, o sublimite proporcional fica `partially_covered`.
+3. RBT12: janela regular ou RBT12p no início de atividade. A RBT12p é usada tanto na faixa quanto na alíquota efetiva, como no exemplo 3 do manual.
+4. Fator R, só quando há receita de atividade sujeita a ele. Se a folha estiver ausente, os dois anexos são calculados como alternativas, sem concluir.
+5. Por lançamento de receita: faixa, alíquota efetiva (precisão total), alíquota de cada tributo (com o teto do ISS do Anexo III) e valor de cada tributo, arredondado pela política recebida. O total é a soma dos valores arredondados.
+6. `conclusive` só é verdadeiro com cobertura `covered`, nenhum dado ausente ou não confirmado, todos os lançamentos calculados e todas as regras aprovadas.
+
+A política de arredondamento por tributo é parâmetro de entrada (D15). Os exemplos do manual são reproduzidos com meio para cima em 2 casas por tributo, mas isso ainda não é decisão.
+
 ### 3.2 Catálogo de regras (`packages/rules-catalog`), conforme D9
 
 Cada `RuleDefinition` contém `id`, `version`, `officialSource`, `validity` (`from`/`to` em competências), `scope`, `owner`, `referenceCaseIds`, `approval` e `parameters`. Valores ainda sem fonte são `Placeholder` (chave `PLACEHOLDER_*`).

@@ -18,12 +18,15 @@ export const factorRV1: RuleDefinition<{
   readonly windowMonths: Parameter<number>;
   /** Payroll items that enter the numerator and the event that makes them count. */
   readonly payrollComponents: Parameter<readonly string[]>;
-  /** How the ratio is computed for companies in their first months of activity. */
-  readonly startOfActivityRule: Parameter<string>;
+  /** Method used for companies in their first months of activity (see PGDAS-D manual 8.2.1). */
+  readonly startOfActivityMethod: Parameter<'opening_month_period_ratio_then_cumulative_since_opening'>;
   /** Precision applied to the ratio before the comparison. */
   readonly ratioRounding: Parameter<{ readonly decimalPlaces: number; readonly mode: 'truncate' }>;
-  /** Values assumed when payroll or revenue windows are zero. */
-  readonly zeroBaseRules: Parameter<readonly string[]>;
+  /** Ratio assumed when the payroll base is zero, and when only the revenue base is zero. */
+  readonly zeroBase: Parameter<{
+    readonly noPayroll: string;
+    readonly payrollWithoutRevenue: string;
+  }>;
   /** Whether export revenue enters the RBT12 used in the ratio. */
   readonly revenueIncludesExports: Parameter<boolean>;
 }> = {
@@ -54,15 +57,9 @@ export const factorRV1: RuleDefinition<{
       'PLACEHOLDER_FACTOR_R_PAYROLL_COMPONENTS',
       'CONFLICT (D25): the manual counts remuneration PAID in the 12 previous months (cash basis, GFIP/eSocial); stakeholders answered payroll competence (D12). Pending stakeholder review.',
     ),
-    startOfActivityRule: defined(
-      'Opening month: payroll of the period / revenue of the period. While fewer than 13 months have elapsed since opening: sum of payroll / sum of revenue from the opening month to the month before the period.',
-    ),
+    startOfActivityMethod: defined('opening_month_period_ratio_then_cumulative_since_opening'),
     ratioRounding: defined({ decimalPlaces: 2, mode: 'truncate' }),
-    zeroBaseRules: defined([
-      'payroll = 0 and revenue = 0 -> 0.01',
-      'payroll = 0 and revenue > 0 -> 0.01',
-      'payroll > 0 and revenue = 0 -> 0.28',
-    ]),
+    zeroBase: defined({ noPayroll: '0.01', payrollWithoutRevenue: '0.28' }),
     revenueIncludesExports: defined(true),
   },
 };

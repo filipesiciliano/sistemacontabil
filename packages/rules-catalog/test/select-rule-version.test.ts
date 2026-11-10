@@ -36,3 +36,26 @@ describe('selectRuleVersion', () => {
     expect(selectRuleVersion([v1, overlapping], competence('2026-07')).outcome).toBe('ambiguous');
   });
 });
+
+describe('selectRuleVersion with allowUnapproved', () => {
+  it('selects the effective draft when no approved version exists', () => {
+    const draft = approvedRule({ approval: { status: 'draft', approvedBy: [] } });
+    const result = selectRuleVersion([draft], competence('2025-01'), { allowUnapproved: true });
+    expect(result.outcome === 'selected' && result.rule.approval.status).toBe('draft');
+  });
+
+  it('still prefers the approved version', () => {
+    const approved = approvedRule({ version: 1 });
+    const draft = approvedRule({ version: 2, approval: { status: 'draft', approvedBy: [] } });
+    const result = selectRuleVersion([approved, draft], competence('2025-01'), {
+      allowUnapproved: true,
+    });
+    expect(result.outcome === 'selected' && result.rule.version).toBe(1);
+  });
+
+  it('never selects a retired version', () => {
+    const retired = approvedRule({ approval: { status: 'retired', approvedBy: [] } });
+    const result = selectRuleVersion([retired], competence('2025-01'), { allowUnapproved: true });
+    expect(result.outcome).toBe('not_found');
+  });
+});

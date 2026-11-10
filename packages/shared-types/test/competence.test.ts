@@ -4,6 +4,7 @@ import {
   compareCompetences,
   competence,
   competenceRange,
+  monthsBetween,
   CompetenceSchema,
 } from '../src/index.js';
 
@@ -35,5 +36,12 @@ describe('Competence', () => {
       '2026-02',
     ]);
     expect(competenceRange(competence('2026-02'), competence('2026-01'))).toEqual([]);
+  });
+
+  it('counts months between competences', () => {
+    expect(monthsBetween(competence('2018-02'), competence('2018-05'))).toBe(3);
+    expect(monthsBetween(competence('2025-12'), competence('2026-01'))).toBe(1);
+    expect(monthsBetween(competence('2026-01'), competence('2026-01'))).toBe(0);
+    expect(monthsBetween(competence('2026-03'), competence('2026-01'))).toBe(-2);
   });
 });
