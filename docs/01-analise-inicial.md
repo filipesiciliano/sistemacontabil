@@ -190,11 +190,11 @@ As perguntas foram enviadas no grupo dos stakeholders numeradas de W1 a W17.
 5. (D24) O que conta como "processado": dados confirmados, conferência concluída ou revisão encerrada?
 6. (R2-11) Quem atua como Administrador no POC?
 7. (D25) Conferir a transcrição das regras do Fator R e da RBT12 no catálogo.
-8. **Para o responsável pelo produto:** D23 adia para o MVP o efeito na pessoa física, que o briefing do POC (D4, D7) incluía. Confirma?
+8. (D25) Os Anexos III e V trazem "Vide LC 214/2025, produção de efeitos". O que muda nessas tabelas a partir de 2027?
+9. **Para o responsável pelo produto:** D23 adia para o MVP o efeito na pessoa física, que o briefing do POC (D4, D7) incluía. Confirma?
 
 **Insumos ainda não recebidos** (bloqueiam o motor)
 
-- Tabelas dos Anexos III e V (faixas, alíquotas nominais, parcelas a deduzir e repartição), com fonte oficial.
 - Lista de CNAEs/atividades sujeitos ao Fator R no recorte.
 - Casos de referência com PGDAS-D real, na lista mínima do doc 07.
 - Links das fontes oficiais citadas no escopo.
