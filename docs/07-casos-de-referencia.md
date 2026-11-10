@@ -51,7 +51,9 @@ Transcrição do demonstrativo: `rbt12`, `factorR` (ou `"missing"` se não aplic
 
 ### 2.4 Resultado esperado (`expected`)
 
-O que o motor deve produzir, segundo o responsável tributário: `coverage`, `rbt12`, `factorR`, `annex`, `bracket`, `effectiveRate`, `taxes`, `principal`, `differenceToDeclared` (`principal` e `additions`) e `notes` (explicação, especialmente para divergências conhecidas: causa e providência esperadas).
+O que o motor deve produzir, segundo o responsável tributário. A comparação é sempre pelo principal (D21): `differenceToDeclared.additions` é só informativo.
+
+Campos: `coverage`, `rbt12`, `factorR`, `annex`, `bracket`, `effectiveRate`, `taxes`, `principal`, `differenceToDeclared` (`principal` e `additions`) e `notes` (explicação, especialmente para divergências conhecidas: causa e providência esperadas).
 
 ## 3. Critérios de precisão e arredondamento **[A ACORDAR]**
 

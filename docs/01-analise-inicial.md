@@ -143,7 +143,7 @@ As perguntas foram enviadas no grupo dos stakeholders numeradas de W1 a W17.
 | W16 | Consultor depende de convite e autorização?                 | Sim.                                                                                                                                  | D17                      |
 | W17 | Retenção de documentos?                                     | 12 meses para os arquivos recebidos da empresa.                                                                                       | D19 · alcance pendente   |
 
-### 4.4 Rodada 2: perguntas remanescentes
+### 4.4 Rodada 2: perguntas enviadas
 
 **Regras tributárias**
 
@@ -164,6 +164,32 @@ As perguntas foram enviadas no grupo dos stakeholders numeradas de W1 a W17.
 
 10. (W17) Os 12 meses contam do envio do arquivo, da competência ou do fim da revisão? A empresa pode pedir a exclusão antes?
 11. Quem atua como Administrador no POC: a equipe de desenvolvimento ou os stakeholders?
+
+### 4.5 Rodada 2: respostas recebidas (2026-11-10)
+
+| #     | Pergunta                                           | Resposta                                                                                                     | Registro                        |
+| ----- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| R2-1  | Casas decimais do Fator R                          | Não sabem.                                                                                                   | Derivar dos casos (D15)         |
+| R2-2  | Fonte do início de atividade                       | LC 123/2006 e desdobramentos. A regra é a da receita, e a folha acompanha.                                   | D20                             |
+| R2-3  | Multa e juros: comparar ou calcular?               | Nenhum dos dois: a comparação é sempre pelo principal, sem encargos de atraso.                               | D21                             |
+| R2-4  | Fonte do fim do regime de caixa                    | Art. 517 da LC 214/2025.                                                                                     | D20                             |
+| R2-5  | ISS: município do estabelecimento ou da prestação? | Do estabelecimento, com as exceções do art. 3º da LC 116/2003.                                               | D20                             |
+| R2-6  | Processamento da folha fixo ou variável?           | Recorrente por cliente: até o último dia do mês ou até o 5º dia útil seguinte.                               | D22                             |
+| R2-7  | Receita sugerida sem estimativa                    | "Utilizar o que foi lançado como média para os 12 meses."                                                    | D22 (interpretação a confirmar) |
+| R2-8  | Considerar tributação de dividendos?               | Não neste momento: o perfil buscado não alcança o limite.                                                    | D23                             |
+| R2-9  | IRPF e deduções no POC?                            | Vem depois.                                                                                                  | D23                             |
+| R2-10 | Início dos 12 meses de guarda                      | Depois de processados, os arquivos não são mais necessários; guardar só a memória das informações extraídas. | D24 (substitui D19)             |
+| R2-11 | Quem é o Administrador no POC?                     | Sem resposta.                                                                                                | Pendente                        |
+
+### 4.6 Perguntas remanescentes
+
+1. (R2-1) Precisão do Fator R: será descoberta pelos casos reais de 27,99% e 28,00%.
+2. (R2-7) Confirmar a interpretação: sem estimativa do usuário, sugerir para o restante do mês a média mensal da receita dos últimos 12 meses?
+3. (D20) As exceções do art. 3º da LC 116/2003 entram no POC ou ficam sinalizadas como revisão?
+4. (D22) Para o 5º dia útil, quais feriados considerar: só os nacionais ou também os estaduais e municipais?
+5. (D24) O que conta como "processado": dados confirmados, conferência concluída ou revisão encerrada?
+6. (R2-11) Quem atua como Administrador no POC?
+7. **Para o responsável pelo produto:** D23 adia para o MVP o efeito na pessoa física, que o briefing do POC (D4, D7) incluía. Confirma?
 
 **Insumos ainda não recebidos** (bloqueiam o motor)
 

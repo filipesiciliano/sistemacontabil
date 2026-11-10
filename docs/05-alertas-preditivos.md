@@ -61,7 +61,7 @@ A especificação continua escrita em termos de **janela da regra** (`windowFor(
 
 Notação: `M` = competência aberta, `T` = competência-alvo, `W = windowFor(T)` = meses da janela.
 
-1. **Receita de M projetada:** `R(M) = receita lançada em M + estimativa do restante de M`, com a estimativa **informada pelo usuário** (D13). Sem estimativa, projeta só com o lançado e avisa que o Fator R pode estar superestimado. Qual valor sugerir como padrão (só o lançado ou média dos últimos meses) está em aberto (doc 01, item 4.4). Mostrar sempre a sensibilidade: "se a receita do mês fechar em X, faltarão Y".
+1. **Receita de M projetada:** `R(M) = receita lançada em M + estimativa do restante de M`, com a estimativa **informada pelo usuário** (D13). Sem estimativa, a sugestão padrão para o restante do mês usa a **média mensal da receita lançada nos últimos 12 meses** (D22, interpretação a confirmar), exibida como premissa editável. Mostrar sempre a sensibilidade: "se a receita do mês fechar em X, faltarão Y".
 2. **Folha de M projetada:** `F(M) = folha já lançada em M + folha prevista e informada para M`, somando todos os itens da folha processada: pró-labore, salários, 13º, férias, FGTS e INSS patronal (D12). Só entra o que o usuário informar.
 3. **Bases da janela:** `Folha12 = Σ F(w)` e `Receita12 = Σ R(w)` para `w ∈ W`, consolidadas no CNPJ raiz. Meses fechados usam valores `Informed` ou `Confirmed`. A memória indica o estado de cada mês.
 4. **Fator R projetado:** `FRp = Folha12 ÷ Receita12`, com a precisão e o arredondamento da regra (`PLACEHOLDER_FACTOR_R_RATIO_ROUNDING`). Com `Receita12 = 0`, o tratamento é **[A CONFIRMAR]** (e o alerta fica em `insufficient_data` até lá).
@@ -73,24 +73,28 @@ Notação: `M` = competência aberta, `T` = competência-alvo, `W = windowFor(T)
 
    Apresentar as alíquotas efetivas (que independem da receita de T) e os DAS estimados (que dependem dela).
 
-8. **Custo estimado do aumento** (premissas, D7 e D14):
-   - **custo com pessoal:** `ΔP` mais os encargos que incidem sobre ele (os mesmos que entram nos 28%, D12), sem duplicar o que já está dentro do DAS;
-   - **contribuição previdenciária do sócio** sobre `ΔP` (`PLACEHOLDER_PROLABORE_PARTNER_CONTRIBUTION`);
-   - **impacto no IRPF do sócio:** IRPF incremental sobre `ΔP` (`PLACEHOLDER_IRPF_TABLE`), comparado com a alternativa de retirar o mesmo valor como lucro (`PLACEHOLDER_PROFIT_DISTRIBUTION_TREATMENT`; se a nova tributação de dividendos entra está em aberto);
-   - **deduções para amortizar o IRPF (D14):** quanto o sócio precisaria ter de deduções (dependentes, plano de saúde, educação etc.) para compensar o IRPF incremental, respeitando os limites de cada dedução (`PLACEHOLDER_IRPF_DEDUCTION_RULES`). É uma estimativa para orientar a conversa com a contabilidade, não uma recomendação de despesa;
-   - o valor `ΔP` em si não é custo: ele é renda do sócio. O custo é o que incide sobre ele em relação à alternativa.
+8. **Custo estimado do aumento:**
+   - **POC (D23):** **custo com pessoal**, ou seja, `ΔP` mais os encargos que incidem sobre ele (os mesmos que entram nos 28%, D12), sem duplicar o que já está dentro do DAS. O efeito na pessoa física aparece como "não estimado nesta versão";
+   - **MVP (D14, D23):** contribuição previdenciária do sócio (`PLACEHOLDER_PROLABORE_PARTNER_CONTRIBUTION`), impacto no IRPF (`PLACEHOLDER_IRPF_TABLE`) e deduções necessárias para compensá-lo (dependentes, saúde, educação; `PLACEHOLDER_IRPF_DEDUCTION_RULES`). A comparação com a retirada como lucro não considera a tributação de dividendos, porque o perfil buscado não alcança o limite (premissa exibida, D23);
+   - o valor `ΔP` em si não é custo: ele é renda do sócio. O custo é o que incide sobre ele.
 9. **Efeito líquido estimado:** `(DAS_V − DAS_III) − custo estimado do aumento`, por competência afetada. A economia **não** é multiplicada por 12: cada competência dentro do horizonte é recalculada com suas próprias premissas.
 10. **Classificação:** o efeito vira oportunidade `potential` (módulo `opportunities`). Só passa a `validated` após revisão da contabilidade e a `realized` após comprovação (PGDAS-D da competência T conferido).
 
 Todos os passos geram `CalculationStep` na memória, com fórmula, entradas, resultado, regra e arredondamento.
 
-### 2.6 Prazo para agir (D13)
+### 2.6 Prazo para agir (D13, D22)
 
-O prazo é o **processamento da folha** da competência em aberto M. Ele varia por empresa: algumas processam dentro do próprio mês, outras no início do mês seguinte (por exemplo, até o 5º dia útil).
+O prazo é o **processamento da folha** da competência em aberto M. Cada empresa adota uma modalidade, que se mantém recorrente (D22):
 
-- O cadastro da empresa ganha o dado "processamento da folha", com a data ou a regra (por exemplo, "5º dia útil do mês seguinte"). Se ele é fixo ou muda todo mês está em aberto (doc 01, item 4.4).
+| Modalidade                                          | Prazo exibido                   |
+| --------------------------------------------------- | ------------------------------- |
+| Dentro do mês (paga os funcionários no próprio mês) | Último dia da competência M     |
+| 5º dia útil                                         | 5º dia útil do mês seguinte a M |
+
+- A modalidade é um dado cadastral da empresa.
+- O 5º dia útil depende de um calendário de feriados versionado. Quais feriados considerar está em aberto (doc 01, item 4.6).
 - O alerta exibe o prazo como data e como contagem regressiva ("faltam 6 dias").
-- Sem esse dado, o alerta mostra "prazo a confirmar com a contabilidade", em vez de inventar uma data.
+- Sem a modalidade, o alerta mostra "prazo a confirmar com a contabilidade", em vez de inventar uma data.
 
 ### 2.7 Texto (linguagem cooperativa)
 
@@ -101,7 +105,7 @@ Exemplos para o dicionário pt-BR. Os valores entre chaves vêm do cálculo, e o
 > **Ainda dá tempo de manter a atividade no Anexo III em {competênciaAlvo}.**
 > Com os lançamentos até {dataDados}, o Fator R projetado é de {FRp}. Para atingir {L}, faltam cerca de **{ΔP} de pró-labore** em {competênciaAberta}, até **{prazo}**.
 > Cenários estimados para {competênciaAlvo}: Anexo III {DAS_III} × Anexo V {DAS_V}.
-> Impacto estimado no seu IRPF: {impactoIRPF}. Deduções (dependentes, saúde, educação) que compensariam esse impacto: cerca de {deducoesNecessarias}.
+> Custo estimado com pessoal (pró-labore e encargos): {custoPessoal}. O efeito no seu imposto de renda ainda não é estimado nesta versão.
 > Custo estimado do aumento, considerando as premissas: {custo}. Efeito líquido estimado: {efeito}.
 > [Ver premissas e memória de cálculo] · [Simular outro valor] · [Compartilhar com a contabilidade]
 
@@ -125,18 +129,17 @@ Vocabulário proibido nos textos: "erro", "falha do contador", "multa garantida"
 
 ### 2.8 Dados faltantes
 
-| Dado                                          | Se `Missing`                | Comportamento                                                                                                                                    |
-| --------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Folha de algum mês da janela                  | Não calcula `FRp`           | `insufficient_data`, listando os meses. Oferece "simular com um valor hipotético", que gera uma **simulação** marcada como tal, nunca um alerta. |
-| Receita de algum mês fechado da janela        | Não calcula `Receita12`     | `insufficient_data`.                                                                                                                             |
-| Receita lançada em M                          | Projeção só com a premissa  | Permitido, com aviso "nenhuma receita lançada ainda em {M}".                                                                                     |
-| Estimativa do restante de M                   | Projeta só com o lançado    | Aviso: "sem a estimativa de receita do mês, o Fator R pode estar acima do real". Pede a estimativa.                                              |
-| Atividade sujeita ao Fator R não confirmada   | Alerta com ressalva         | "Confirme se a atividade {descrição} está sujeita ao Fator R."                                                                                   |
-| Data de início de atividade                   | Não calcula                 | `insufficient_data`; o início de atividade muda as janelas.                                                                                      |
-| Premissas de custo (encargos, IRPF, deduções) | Calcula `ΔP` e os cenários  | Efeito líquido e deduções necessárias "não estimados", com o motivo.                                                                             |
-| Processamento da folha da empresa             | Calcula tudo, menos o prazo | "Prazo a confirmar com a contabilidade."                                                                                                         |
-| Deduções que o sócio já tem                   | Calcula o IRPF sem deduções | Mostra as deduções necessárias a partir de zero e pede as existentes.                                                                            |
-| Regras não aprovadas para T                   | Não gera alerta em produção | Em ambiente de POC/homologação: alerta com selo "regras em validação".                                                                           |
+| Dado                                        | Se `Missing`                                  | Comportamento                                                                                                                                    |
+| ------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Folha de algum mês da janela                | Não calcula `FRp`                             | `insufficient_data`, listando os meses. Oferece "simular com um valor hipotético", que gera uma **simulação** marcada como tal, nunca um alerta. |
+| Receita de algum mês fechado da janela      | Não calcula `Receita12`                       | `insufficient_data`.                                                                                                                             |
+| Receita lançada em M                        | Projeção só com a premissa                    | Permitido, com aviso "nenhuma receita lançada ainda em {M}".                                                                                     |
+| Estimativa do restante de M                 | Usa a média mensal dos últimos 12 meses (D22) | Exibe a premissa e permite editar.                                                                                                               |
+| Atividade sujeita ao Fator R não confirmada | Alerta com ressalva                           | "Confirme se a atividade {descrição} está sujeita ao Fator R."                                                                                   |
+| Data de início de atividade                 | Não calcula                                   | `insufficient_data`; o início de atividade muda as janelas.                                                                                      |
+| Encargos sobre o pró-labore                 | Calcula `ΔP` e os cenários                    | Custo com pessoal "não estimado", com o motivo.                                                                                                  |
+| Modalidade de processamento da folha        | Calcula tudo, menos o prazo                   | "Prazo a confirmar com a contabilidade."                                                                                                         |
+| Regras não aprovadas para T                 | Não gera alerta em produção                   | Em ambiente de POC/homologação: alerta com selo "regras em validação".                                                                           |
 
 ### 2.9 Ciclo de vida e registro
 
@@ -147,9 +150,13 @@ Vocabulário proibido nos textos: "erro", "falha do contador", "multa garantida"
 
 ### 2.10 Parâmetros
 
-**Respondidos pelos stakeholders (D12, D13), aguardando fonte oficial:** comparação `≥` (`PLACEHOLDER_FACTOR_R_COMPARISON`), janela de 12 meses anteriores (`PLACEHOLDER_FACTOR_R_WINDOW`), componentes da folha processada (`PLACEHOLDER_FACTOR_R_PAYROLL_COMPONENTS`), anualização no início de atividade (`PLACEHOLDER_FACTOR_R_START_OF_ACTIVITY`). Limite de atenção de 28,10% e prazo pelo processamento da folha são decisões de produto (D13) e não dependem de fonte.
+**Respondidos pelos stakeholders (D12, D20), aguardando a transcrição da fonte oficial (LC 123/2006):** comparação `≥` (`PLACEHOLDER_FACTOR_R_COMPARISON`), janela de 12 meses anteriores (`PLACEHOLDER_FACTOR_R_WINDOW`), componentes da folha processada (`PLACEHOLDER_FACTOR_R_PAYROLL_COMPONENTS`), início de atividade pela regra da receita (`PLACEHOLDER_FACTOR_R_START_OF_ACTIVITY`).
 
-**Ainda a receber:** `PLACEHOLDER_FACTOR_R_THRESHOLD` (fonte), `PLACEHOLDER_FACTOR_R_RATIO_ROUNDING`, `PLACEHOLDER_PROLABORE_PAYROLL_CHARGES`, `PLACEHOLDER_PROLABORE_PARTNER_CONTRIBUTION`, `PLACEHOLDER_IRPF_TABLE`, `PLACEHOLDER_IRPF_DEDUCTION_RULES`, `PLACEHOLDER_PROFIT_DISTRIBUTION_TREATMENT`, `PLACEHOLDER_ALERT_REMINDER_DAYS`.
+**Decisões de produto (não dependem de fonte):** limite de atenção de 28,10% (D13), prazo pela modalidade de processamento da folha (D22), receita sugerida pela média de 12 meses (D22).
+
+**Ainda a receber no POC:** `PLACEHOLDER_FACTOR_R_THRESHOLD` (transcrição da fonte), `PLACEHOLDER_FACTOR_R_RATIO_ROUNDING` (derivar dos casos), `PLACEHOLDER_PROLABORE_PAYROLL_CHARGES`, calendário de feriados, `PLACEHOLDER_ALERT_REMINDER_DAYS`.
+
+**MVP (D23):** `PLACEHOLDER_PROLABORE_PARTNER_CONTRIBUTION`, `PLACEHOLDER_IRPF_TABLE`, `PLACEHOLDER_IRPF_DEDUCTION_RULES`.
 
 ## 3. Catálogo de alertas futuros
 

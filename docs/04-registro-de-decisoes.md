@@ -2,27 +2,32 @@
 
 > Formato ADR resumido: contexto, decisão e consequências. Decisões novas são acrescentadas ao fim, com o próximo número. Uma decisão nunca é editada para mudar de sentido: ela é **substituída** por outra, que referencia a anterior. Decisões ainda em debate ficam como **[DECISÃO PENDENTE]** em [`02-arquitetura-proposta.md`](02-arquitetura-proposta.md) até serem aprovadas.
 
-| #   | Título                                                                     | Status                            |
-| --- | -------------------------------------------------------------------------- | --------------------------------- |
-| D1  | Alerta preditivo intra-mês no POC, começando pelo Fator R                  | Aprovada (adição ao escopo)       |
-| D2  | NCM/CFOP e mercadorias fora do POC e do MVP                                | Aprovada                          |
-| D3  | Stakeholders como responsáveis tributários e fonte dos casos de referência | Aprovada                          |
-| D4  | Recorte do POC                                                             | Aprovada                          |
-| D5  | PGDAS-D digitado manualmente no POC                                        | Aprovada                          |
-| D6  | Planilha padrão de importação como dependência bloqueante                  | Aprovada                          |
-| D7  | Efeito do pró-labore na PF e encargos como estimativa com premissas        | Aprovada                          |
-| D8  | Quatro perfis no POC                                                       | Aprovada                          |
-| D9  | Regras como código, aprovadas via PR                                       | Aprovada                          |
-| D10 | Critério de sucesso do POC: aprovação dos stakeholders                     | Aprovada                          |
-| D11 | Nome da plataforma não definido; identificadores neutros                   | Aprovada                          |
-| D12 | Regras do Fator R respondidas pelos stakeholders                           | Aprovada (fonte oficial pendente) |
-| D13 | Parâmetros do alerta de Fator R                                            | Aprovada                          |
-| D14 | Impacto do pró-labore no IRPF e deduções para compensá-lo                  | Aprovada (fase pendente)          |
-| D15 | Tolerância de centavos na conferência                                      | Provisória                        |
-| D16 | ISS em vários municípios no POC; regime de caixa fora                      | Aprovada                          |
-| D17 | Consultor tributário depende de convite e autorização                      | Aprovada                          |
-| D18 | MFA adiado para depois do POC                                              | Aprovada                          |
-| D19 | Retenção de 12 meses para os arquivos recebidos da empresa                 | Aprovada (alcance pendente)       |
+| #   | Título                                                                     | Status                                          |
+| --- | -------------------------------------------------------------------------- | ----------------------------------------------- |
+| D1  | Alerta preditivo intra-mês no POC, começando pelo Fator R                  | Aprovada (adição ao escopo)                     |
+| D2  | NCM/CFOP e mercadorias fora do POC e do MVP                                | Aprovada                                        |
+| D3  | Stakeholders como responsáveis tributários e fonte dos casos de referência | Aprovada                                        |
+| D4  | Recorte do POC                                                             | Aprovada                                        |
+| D5  | PGDAS-D digitado manualmente no POC                                        | Aprovada                                        |
+| D6  | Planilha padrão de importação como dependência bloqueante                  | Aprovada                                        |
+| D7  | Efeito do pró-labore na PF e encargos como estimativa com premissas        | Aprovada                                        |
+| D8  | Quatro perfis no POC                                                       | Aprovada                                        |
+| D9  | Regras como código, aprovadas via PR                                       | Aprovada                                        |
+| D10 | Critério de sucesso do POC: aprovação dos stakeholders                     | Aprovada                                        |
+| D11 | Nome da plataforma não definido; identificadores neutros                   | Aprovada                                        |
+| D12 | Regras do Fator R respondidas pelos stakeholders                           | Aprovada (fonte oficial pendente)               |
+| D13 | Parâmetros do alerta de Fator R                                            | Aprovada                                        |
+| D14 | Impacto do pró-labore no IRPF e deduções para compensá-lo                  | Aprovada; fase definida por D23 (MVP)           |
+| D15 | Tolerância de centavos na conferência                                      | Provisória                                      |
+| D16 | ISS em vários municípios no POC; regime de caixa fora                      | Aprovada                                        |
+| D17 | Consultor tributário depende de convite e autorização                      | Aprovada                                        |
+| D18 | MFA adiado para depois do POC                                              | Aprovada                                        |
+| D19 | Retenção de 12 meses para os arquivos recebidos da empresa                 | Substituída por D24                             |
+| D20 | Fontes e regras complementares (início de atividade, regime de caixa, ISS) | Aprovada (fontes informadas pelos stakeholders) |
+| D21 | Conferência sempre pelo principal, sem acréscimos                          | Aprovada                                        |
+| D22 | Processamento da folha e receita sugerida no alerta                        | Aprovada                                        |
+| D23 | Efeito na pessoa física fica para o MVP, sem comparação com dividendos     | Aprovada                                        |
+| D24 | Arquivos descartados após o processamento                                  | Aprovada                                        |
 
 ---
 
@@ -225,3 +230,73 @@ Ficam fora (como próximas etapas): importação por planilha, extração de doc
 
 - Regra de ciclo de vida no bucket de evidências (infra).
 - **[DECISÃO PENDENTE]** O que conta como início dos 12 meses (envio do arquivo, competência ou encerramento da revisão), o que acontece com os snapshots de cálculo que referenciam um arquivo excluído (os snapshots são imutáveis e guardam valores, não o arquivo) e se a empresa pode pedir exclusão antes do prazo (LGPD).
+
+---
+
+> **Rodada 2 de respostas dos stakeholders (2026-11-10).** Perguntas numeradas R2-1 a R2-11 (doc 01, item 4.5).
+
+## D20 · Fontes e regras complementares
+
+**Contexto.** A rodada 1 deixou fontes e detalhes em aberto (R2-2, R2-4, R2-5).
+
+**Decisão.**
+
+- **Início de atividade (R2-2):** a fonte é a LC 123/2006 e seus desdobramentos. A regra é a da receita (RBT12 proporcional no início de atividade), e a folha do Fator R **acompanha a mesma lógica** (complementa D12).
+- **Fim do regime de caixa (R2-4):** fonte informada pelos stakeholders, art. 517 da LC 214/2025 (complementa D16).
+- **ISS em vários municípios (R2-5):** o ISS é devido ao **município do estabelecimento**, com as exceções do art. 3º da LC 116/2003 (complementa D16).
+
+**Consequências.**
+
+- As fontes entram nas regras do catálogo, que continuam `draft` até a transcrição do texto oficial e a conferência dos stakeholders.
+- **[DECISÃO PENDENTE]** Tratamento das exceções do art. 3º da LC 116/2003 no POC. Proposta: o cadastro pergunta se algum serviço prestado se enquadra nessas exceções. Se sim, a parcela do ISS dessa receita fica `partially_covered` (tributos federais calculados, ISS sinalizado para revisão).
+
+## D21 · Conferência sempre pelo principal, sem acréscimos
+
+**Contexto.** R2-3, reformulação da pergunta sobre multa e juros.
+
+**Decisão.** A comparação entre apurado e calculado é feita **sempre pelo valor principal**, sem encargos de atraso. A plataforma não calcula multa nem juros.
+
+**Consequências.** A conferência continua exibindo os acréscimos informados separados do principal (critério de aceite 5 do escopo), mas eles não entram na diferença nem geram divergência. Matriz: C12 passa a "exibição informativa". O campo `differenceToDeclared.additions` dos casos de referência passa a ser informativo.
+
+## D22 · Processamento da folha e receita sugerida no alerta
+
+**Contexto.** R2-6 e R2-7 detalham D13.
+
+**Decisão.**
+
+- **Processamento da folha (R2-6):** cada empresa adota uma de duas modalidades, que se mantém recorrente depois de definida:
+  - **dentro do mês:** a empresa paga os funcionários no próprio mês, e a folha é processada até o último dia da competência;
+  - **5º dia útil:** a folha é processada até o 5º dia útil do mês seguinte.
+- **Receita sugerida (R2-7):** sem estimativa informada pelo usuário, a sugestão padrão para o restante do mês usa a **média mensal dos 12 meses lançados** **[interpretação a confirmar: a resposta foi "utilizar o que foi lançado como média para os 12 meses"]**.
+
+**Consequências.**
+
+- O cadastro da empresa ganha a modalidade de processamento da folha. O prazo do alerta deriva dela.
+- O cálculo do 5º dia útil exige um calendário de dias úteis (feriados nacionais e, possivelmente, estaduais e municipais) **[A CONFIRMAR: quais feriados considerar]**. O calendário entra como dado versionado, não calculado de memória.
+
+## D23 · Efeito na pessoa física fica para o MVP, sem comparação com dividendos
+
+**Contexto.** R2-8 e R2-9. D14 havia definido mostrar o impacto no IRPF e as deduções necessárias, com a fase em aberto.
+
+**Decisão.**
+
+- O impacto do pró-labore no IRPF e as deduções necessárias para compensá-lo (D14) ficam para o **MVP**.
+- A comparação com a retirada como lucro **não considera** a tributação de dividendos, porque o perfil de empresário buscado neste momento não alcança o limite dessa tributação. Isso é exibido como premissa.
+
+**Consequências.**
+
+- No POC, o custo do aumento de pró-labore mostra o **custo com pessoal** (pró-labore e encargos, D12). O efeito na pessoa física aparece como "não estimado nesta versão".
+- **Atenção:** o briefing do POC (D4 e D7) previa o efeito na pessoa física como estimativa com premissas já no POC. Esta decisão adia esse ponto e precisa da confirmação do responsável pelo produto.
+
+## D24 · Arquivos descartados após o processamento
+
+**Contexto.** R2-10. Substitui D19 (retenção de 12 meses).
+
+**Decisão.** Os arquivos recebidos da empresa são necessários só até serem **processados** pela plataforma. Depois disso, guarda-se apenas a **memória das informações extraídas** (dados confirmados e snapshots de cálculo).
+
+**Consequências.**
+
+- Bucket de evidências com exclusão após o processamento, e não retenção longa.
+- **[DECISÃO PENDENTE]** O que conta como "processado": dados extraídos e **confirmados** pelo usuário (proposta), conferência concluída ou fluxo de revisão encerrado.
+- **Risco:** o escopo (§5.6) prevê registrar evidências no fluxo de revisão com a contabilidade. Se o arquivo for apagado antes da revisão, a contabilidade perde o documento de origem. Proposta: apagar só depois da conclusão da revisão, quando houver uma em andamento.
+- No POC, o PGDAS-D é digitado (D5). Os arquivos se limitam a evidências anexadas na revisão.

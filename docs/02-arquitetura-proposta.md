@@ -1,6 +1,6 @@
 # 02 · Arquitetura proposta
 
-> Base: escopo §7 e §8, decisões D1–D19 ([`04-registro-de-decisoes.md`](04-registro-de-decisoes.md)) e a stack definida no briefing. Itens marcados **[DECISÃO PENDENTE]** trazem opções e uma recomendação, mas só viram decisão depois do debate.
+> Base: escopo §7 e §8, decisões D1–D24 ([`04-registro-de-decisoes.md`](04-registro-de-decisoes.md)) e a stack definida no briefing. Itens marcados **[DECISÃO PENDENTE]** trazem opções e uma recomendação, mas só viram decisão depois do debate.
 
 ## 1. Visão geral
 
@@ -170,7 +170,7 @@ As versões das regras são publicadas por PR e deploy (D9). O Administrador as 
 ## 7. Processamento assíncrono e arquivos
 
 - **SQS (com DLQ):** recálculo de alertas a cada lançamento, se o síncrono não bastar; projeções longas; no futuro, importação e extração. Mensagens idempotentes, com `companyId` e `competence`.
-- **S3:** evidências (PGDAS-D, DAS, comprovantes), com criptografia, bloqueio de acesso público, versionamento e retenção em produção (`infra/src/stacks/evidence-storage-stack.ts`). Retenção de **12 meses** para os arquivos recebidos da empresa (D19), via regra de ciclo de vida do bucket. **[DECISÃO PENDENTE]** Início da contagem, exclusão antecipada a pedido da empresa (LGPD) e chave KMS própria (CMK) em vez de SSE-S3.
+- **S3:** evidências (PGDAS-D, DAS, comprovantes), com criptografia, bloqueio de acesso público e versionamento (`infra/src/stacks/evidence-storage-stack.ts`). Com versionamento, apagar um arquivo mantém a versão anterior, então o bucket precisa expirar as versões antigas para a exclusão ser efetiva (a implementar com D24). Os arquivos recebidos da empresa são **apagados depois de processados**; ficam só os dados extraídos e confirmados e os snapshots (D24, que substitui D19). Implementação: exclusão disparada pelo evento de processamento, com uma regra de ciclo de vida curta no bucket como rede de segurança. **[DECISÃO PENDENTE]** O que conta como "processado" e chave KMS própria (CMK) em vez de SSE-S3.
 
 ## 8. Frontend
 
@@ -203,16 +203,16 @@ Se o Docker Hub estiver inacessível, use `POSTGRES_TEST_IMAGE` para apontar par
 
 ## 11. Resumo das decisões pendentes
 
-| #   | Tema                                     | Recomendação                                                                                     |
-| --- | ---------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| P1  | Módulos × Lambdas                        | C (HTTP único e workers por fila)                                                                |
-| P2  | Isolamento entre empresas                | Aplicação e RLS                                                                                  |
-| P3  | Conexão Lambda → Aurora                  | RDS Proxy com `pg`                                                                               |
-| P4  | MFA por perfil                           | Adiado para o MVP (D18)                                                                          |
-| P5  | Matriz de permissões                     | Proposta na seção 6                                                                              |
-| P6  | Contratos API ↔ web                      | Pacote `@platform/api-contracts` com Zod                                                         |
-| P7  | Proteção do fluxo de aprovação de regras | CODEOWNERS                                                                                       |
-| P8  | Retenção de documentos e CMK             | 12 meses para arquivos da empresa (D19); início da contagem, exclusão antecipada e CMK em aberto |
-| P9  | Contas, região, CI/CD, observabilidade   | `sa-east-1`, GitHub Actions com OIDC                                                             |
-| P10 | Versão do PostgreSQL                     | Igual no Aurora e nos testes                                                                     |
-| P11 | Roteamento e UI do web                   | A definir                                                                                        |
+| #   | Tema                                     | Recomendação                                                                                                         |
+| --- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| P1  | Módulos × Lambdas                        | C (HTTP único e workers por fila)                                                                                    |
+| P2  | Isolamento entre empresas                | Aplicação e RLS                                                                                                      |
+| P3  | Conexão Lambda → Aurora                  | RDS Proxy com `pg`                                                                                                   |
+| P4  | MFA por perfil                           | Adiado para o MVP (D18)                                                                                              |
+| P5  | Matriz de permissões                     | Proposta na seção 6                                                                                                  |
+| P6  | Contratos API ↔ web                      | Pacote `@platform/api-contracts` com Zod                                                                             |
+| P7  | Proteção do fluxo de aprovação de regras | CODEOWNERS                                                                                                           |
+| P8  | Arquivos e CMK                           | Descartar após o processamento, guardando só os dados extraídos (D24); o que conta como "processado" e CMK em aberto |
+| P9  | Contas, região, CI/CD, observabilidade   | `sa-east-1`, GitHub Actions com OIDC                                                                                 |
+| P10 | Versão do PostgreSQL                     | Igual no Aurora e nos testes                                                                                         |
+| P11 | Roteamento e UI do web                   | A definir                                                                                                            |

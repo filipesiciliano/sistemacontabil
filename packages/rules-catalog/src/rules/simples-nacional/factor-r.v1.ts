@@ -51,7 +51,7 @@ export const factorRV1: RuleDefinition<{
     ),
     startOfActivityRule: placeholder(
       'PLACEHOLDER_FACTOR_R_START_OF_ACTIVITY',
-      'Stakeholders answered: first month payroll x 12, adjusted as months accrue (D12); official source pending.',
+      'Stakeholders answered: follows the revenue start-of-activity rule of LC 123/2006 (first month payroll x 12, adjusted as months accrue) (D12, D20); official text pending.',
     ),
     ratioRounding: placeholder(
       'PLACEHOLDER_FACTOR_R_RATIO_ROUNDING',

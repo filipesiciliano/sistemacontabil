@@ -12,7 +12,7 @@ Conferência, oportunidades e projeção tributária para empresas do Simples Na
 | [`docs/01-analise-inicial.md`](docs/01-analise-inicial.md)           | Problema, glossário, regras do recorte, lacunas, riscos e perguntas |
 | [`docs/02-arquitetura-proposta.md`](docs/02-arquitetura-proposta.md) | Arquitetura, trade-offs e decisões pendentes                        |
 | [`docs/03-matriz-cobertura.md`](docs/03-matriz-cobertura.md)         | Matriz de cobertura v0.1                                            |
-| [`docs/04-registro-de-decisoes.md`](docs/04-registro-de-decisoes.md) | Decisões D1–D19 (ADR resumido)                                      |
+| [`docs/04-registro-de-decisoes.md`](docs/04-registro-de-decisoes.md) | Decisões D1–D24 (ADR resumido)                                      |
 | [`docs/05-alertas-preditivos.md`](docs/05-alertas-preditivos.md)     | Alerta de Fator R e catálogo de alertas futuros                     |
 | [`docs/06-roadmap.md`](docs/06-roadmap.md)                           | POC → MVP → evolução, com dependências                              |
 | [`docs/07-casos-de-referencia.md`](docs/07-casos-de-referencia.md)   | Formato dos casos, critérios de precisão e cenários                 |
